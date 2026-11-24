@@ -6,10 +6,18 @@ import pickle
 
 app = Flask(__name__)
 
-MODEL_PATH = os.getenv("MODEL_PATH", "model/model.pkl")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL_PATH = os.getenv("MODEL_PATH", os.path.join(BASE_DIR, "model", "model.pkl"))
 
-with open(MODEL_PATH, "rb") as f:
-    model = pickle.load(f)
+model = None
+
+
+def get_model():
+    global model
+    if model is None:
+        with open(MODEL_PATH, "rb") as f:
+            model = pickle.load(f)
+    return model
 
 
 def get_db():
@@ -35,8 +43,9 @@ def predict():
     if not features:
         return jsonify({"error": "No features provided"}), 400
 
-    pred = model.predict([features])[0]
-    proba = max(model.predict_proba([features])[0])
+    prediction_model = get_model()
+    pred = prediction_model.predict([features])[0]
+    proba = max(prediction_model.predict_proba([features])[0])
 
     result = {
         "class": int(pred),
