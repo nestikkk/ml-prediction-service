@@ -13,4 +13,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_SSLMODE: require
       MODEL_PATH: /model/model.pkl
+    volumes:
+      - ../model/model.pkl:/model/model.pkl:ro
     restart: unless-stopped
