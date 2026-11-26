@@ -58,7 +58,7 @@ jobs:
 
   deploy:
     needs: build-and-push
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Deploy to VM2 via SSH
