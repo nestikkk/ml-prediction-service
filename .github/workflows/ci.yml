@@ -71,5 +71,5 @@ jobs:
             cd ~/ml-prediction-service
             git pull origin main
             echo "${{ secrets.REGISTRY_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker-compose -f docker/docker-compose.yml pull
-            docker-compose -f docker/docker-compose.yml up -d --build
+            docker compose -f docker/docker-compose.yml pull
+            docker compose -f docker/docker-compose.yml up -d
