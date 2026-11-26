@@ -12,7 +12,7 @@ MODEL_PATH = os.getenv("MODEL_PATH", os.path.join(BASE_DIR, "model", "model.pkl"
 model = None
 
 
-def get_model:
+def get_model():
     global model
     if model is None:
         with open(MODEL_PATH, "rb") as f:
