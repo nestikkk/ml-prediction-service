@@ -1,0 +1,45 @@
+---
+- name: Configure app server (VM2)
+  hosts: app
+  become: yes
+  tasks:
+    - name: Install Docker and Docker Compose
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+        state: present
+
+    - name: Ensure Docker is running and enabled
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add student to docker group
+      user:
+        name: student
+        groups: docker
+        append: yes
+
+    - name: Clone/update project repository
+      git:
+        repo: "git@github.com:nestikkk/ml-prediction-service.git"
+        dest: /home/student/ml-prediction-service
+        version: main
+        update: yes
+      become_user: student
+      ignore_errors: yes
+
+    - name: Copy .env file with DB password
+      copy:
+        content: "DB_PASSWORD=StrongPassword\n"
+        dest: /home/student/ml-prediction-service/docker/.env
+        owner: student
+        mode: '0600'
+
+    - name: Start ML service via docker-compose
+      command: docker-compose -f docker/docker-compose.yml up -d --build
+      args:
+        chdir: /home/student/ml-prediction-service
+      become_user: student
